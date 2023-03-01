@@ -4,7 +4,8 @@ let list = localStorage.getItem('wallets')
 
 const iniatialState = {
     walletList: list ? JSON.parse(list) : [],
-    usdPrice: {},
+    usdBTCPrice: {},
+    usdETHPrice: {},
     error: false
 }
 
@@ -20,10 +21,15 @@ function reducer(state = iniatialState, action){
                 ...state,
                 error: action.payload
             }
-        case types.SET_USD_PRICE:
+        case types.SET_BTC_USD_PRICE:
             return {
                 ...state,
-                usdPrice: action.payload
+                usdBTCPrice: action.payload
+            }
+        case types.SET_ETH_USD_PRICE:
+            return {
+                ...state,
+                usdETHPrice: action.payload
             }
         default:
             return state

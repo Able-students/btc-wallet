@@ -15,10 +15,13 @@ import Snackbar from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Pagination from '@mui/material/Pagination';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 
 function Wallet() {
     useEffect(() => {
-        actions.loadBtcPrice()
+        actions.loadUSDPrice()
     }, [])
     const { walletList, error } = useSelector((state) => state.walletReducer);
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -54,10 +57,12 @@ function Wallet() {
     const [pageList, setPageList] = useState([]);
     const [pageLength, setPageLength] = useState(1);
     const [pageActive, setPageActive] = useState(1);
+
     useEffect(() => {
         let pgs = Math.ceil(walletList.length / 3);
         setPageLength(pgs);
     }, [walletList])
+
     useEffect(() => {
         let page = pageActive * 3
         let listActive = walletList.slice((page - 3), page)
@@ -66,6 +71,17 @@ function Wallet() {
         }
         setPageList(listActive)
     }, [pageActive, walletList])
+
+    const [value, setValue] = useState('all');
+
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+      if(newValue !== 'all'){
+        setPageList(walletList.filter(elem => elem.net === newValue))
+      }else{
+        setPageList(walletList)
+      }
+    };
 
     return (
         <div className="center">
@@ -76,6 +92,13 @@ function Wallet() {
                 </Alert>
             </Snackbar>
             <AddAddress />
+            <Box sx={{ minWidth: 300, maxWidth: 815 }}>
+                <Tabs value={value} onChange={handleChange} aria-label="lab API tabs example"  textColor="primary" indicatorColor="primary">
+                    <Tab label="All" value="all" />
+                    <Tab label="BTC" value="btc" />
+                    <Tab label="ETH" value="eth" />
+                </Tabs>
+            </Box>
             <TableContainer component={Paper} sx={{ minWidth: 300, maxWidth: 815 }}>
                 <Table aria-label="customized table">
                     <TableHead>
@@ -92,8 +115,8 @@ function Wallet() {
                                 <StyledTableCell component="th" scope="row">
                                     {row.address}
                                 </StyledTableCell>
-                                <StyledTableCell align="right">{row.balance} BTC</StyledTableCell>
-                                <StyledTableCell align="right">$ {row.usdBalance}</StyledTableCell>
+                                <StyledTableCell align="right">{row.balance.toFixed(6)} {row.net?.toUpperCase()}</StyledTableCell>
+                                <StyledTableCell align="right">$ {row.usdBalance.toFixed(2)}</StyledTableCell>
                                 <StyledTableCell align="right">
                                     <Button size="small" variant="outlined" startIcon={<DeleteIcon />}
                                         onClick={() => actions.deleteItem(row.address)}>Delete</Button></StyledTableCell>

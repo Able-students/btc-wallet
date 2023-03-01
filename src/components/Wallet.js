@@ -16,32 +16,31 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Pagination from '@mui/material/Pagination';
 
-function Wallet(){
+function Wallet() {
     useEffect(() => {
         actions.loadBtcPrice()
-    },[])
-    const { walletList, error } = useSelector((state) => state.walletReducer)
-
+    }, [])
+    const { walletList, error } = useSelector((state) => state.walletReducer);
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
-          backgroundColor: 'gray',
-          color: theme.palette.common.white,
+            backgroundColor: 'gray',
+            color: theme.palette.common.white,
         },
         [`&.${tableCellClasses.body}`]: {
-          fontSize: 14,
+            fontSize: 14,
         },
-      }));
-      
-      const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    }));
+
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
         '&:nth-of-type(odd)': {
-          backgroundColor: theme.palette.action.hover,
+            backgroundColor: theme.palette.action.hover,
         },
         // hide last border
         '&:last-child td, &:last-child th': {
-          border: 0,
+            border: 0,
         },
-      }));
-    
+    }));
+
     const [open, setError] = useState(error)
     const handleClose = () => {
         setError(false)
@@ -50,44 +49,63 @@ function Wallet(){
 
     useEffect(() => {
         setError(typeof error === 'string' ? true : false)
-    },[error])
-  
-    return(
+    }, [error])
+
+    const [pageList, setPageList] = useState([]);
+    const [pageLength, setPageLength] = useState(1);
+    const [pageActive, setPageActive] = useState(1);
+    useEffect(() => {
+        let pgs = Math.ceil(walletList.length / 3);
+        setPageLength(pgs);
+    }, [walletList])
+    useEffect(() => {
+        let page = pageActive * 3
+        let listActive = walletList.slice((page - 3), page)
+        if (listActive.length === 0 && walletList.length > 0) {
+            setPageActive(pageActive - 1)
+        }
+        setPageList(listActive)
+    }, [pageActive, walletList])
+
+    return (
         <div className="center">
             <h2>Bitcoin wallet</h2>
-            <Snackbar  anchorOrigin={{ vertical: "top", horizontal: "center" }} open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={open} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
                     {error}
                 </Alert>
             </Snackbar>
-            <AddAddress/>
+            <AddAddress />
             <TableContainer component={Paper} sx={{ minWidth: 300, maxWidth: 815 }}>
-                <Table  aria-label="customized table">
+                <Table aria-label="customized table">
                     <TableHead>
-                    <TableRow>
-                        <StyledTableCell>Address</StyledTableCell>
-                        <StyledTableCell align="right">Balance</StyledTableCell>
-                        <StyledTableCell align="right">USD</StyledTableCell>
-                        <StyledTableCell align="right">Action</StyledTableCell>
-                    </TableRow>
+                        <TableRow>
+                            <StyledTableCell>Address</StyledTableCell>
+                            <StyledTableCell align="right">Balance</StyledTableCell>
+                            <StyledTableCell align="right">USD</StyledTableCell>
+                            <StyledTableCell align="right">Action</StyledTableCell>
+                        </TableRow>
                     </TableHead>
                     <TableBody>
-                    {walletList?.map((row) => (
-                        <StyledTableRow key={row.address}>
-                            <StyledTableCell component="th" scope="row">
-                                {row.address}
-                            </StyledTableCell>
-                            <StyledTableCell align="right">{row.balance} BTC</StyledTableCell>
-                            <StyledTableCell align="right">$ {row.usdBalance}</StyledTableCell>
-                            <StyledTableCell align="right">
-                                <Button size="small" variant="outlined" startIcon={<DeleteIcon />}>Delete</Button></StyledTableCell>
-                        </StyledTableRow>
-                    ))}
+                        {pageList?.map((row) => (
+                            <StyledTableRow key={row.address}>
+                                <StyledTableCell component="th" scope="row">
+                                    {row.address}
+                                </StyledTableCell>
+                                <StyledTableCell align="right">{row.balance} BTC</StyledTableCell>
+                                <StyledTableCell align="right">$ {row.usdBalance}</StyledTableCell>
+                                <StyledTableCell align="right">
+                                    <Button size="small" variant="outlined" startIcon={<DeleteIcon />}
+                                        onClick={() => actions.deleteItem(row.address)}>Delete</Button></StyledTableCell>
+                            </StyledTableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            <br/>
-            <Pagination count={3} defaultPage={1} color="primary" onChange={(e,p) => {console.log(p)}}/>
+            <br />
+            {
+                pageList.length ? <Pagination count={pageLength} page={pageActive} defaultPage={1} color="primary" onChange={(e, p) => { setPageActive(p) }} /> : ''
+            }
         </div>
     )
 }

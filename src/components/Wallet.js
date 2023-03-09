@@ -57,10 +57,17 @@ function Wallet() {
     const [pageList, setPageList] = useState([]);
     const [pageLength, setPageLength] = useState(1);
     const [pageActive, setPageActive] = useState(1);
+    const [totalUsd, setTotalUsd] = useState(0);
 
     useEffect(() => {
         let pgs = Math.ceil(walletList.length / 3);
         setPageLength(pgs);
+
+        let sum = 0;
+        walletList?.forEach(elem => {
+            sum += elem.usdBalance
+        });
+        setTotalUsd(sum.toFixed(2));
     }, [walletList])
 
     useEffect(() => {
@@ -75,12 +82,12 @@ function Wallet() {
     const [value, setValue] = useState('all');
 
     const handleChange = (event, newValue) => {
-      setValue(newValue);
-      if(newValue !== 'all'){
-        setPageList(walletList.filter(elem => elem.net === newValue))
-      }else{
-        setPageList(walletList)
-      }
+        setValue(newValue);
+        if (newValue !== 'all') {
+            setPageList(walletList.filter(elem => elem.net === newValue))
+        } else {
+            setPageList(walletList)
+        }
     };
 
     return (
@@ -93,13 +100,13 @@ function Wallet() {
             </Snackbar>
             <AddAddress />
             <Box sx={{ minWidth: 300, maxWidth: 815 }}>
-                <Tabs value={value} onChange={handleChange} aria-label="lab API tabs example"  textColor="primary" indicatorColor="primary">
+                <Tabs value={value} onChange={handleChange} aria-label="lab API tabs example" textColor="primary" indicatorColor="primary">
                     <Tab label="All" value="all" />
                     <Tab label="BTC" value="btc" />
                     <Tab label="ETH" value="eth" />
                 </Tabs>
             </Box>
-            <TableContainer component={Paper} sx={{ minWidth: 300, maxWidth: 815 }}>
+            <TableContainer component={Paper} sx={{ minWidth: 300, maxWidth: '100%' }}>
                 <Table aria-label="customized table">
                     <TableHead>
                         <TableRow>
@@ -122,12 +129,21 @@ function Wallet() {
                                         onClick={() => actions.deleteItem(row.address)}>Delete</Button></StyledTableCell>
                             </StyledTableRow>
                         ))}
+                        <TableRow >
+                            <TableCell rowSpan={3} colSpan={2} align='center' scope="row">
+                                <h3>Total USD sum: </h3>
+                            </TableCell>
+                            <TableCell rowSpan={10} align='right' scope="row">
+                                $ {totalUsd}
+                            </TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
             <br />
+
             {
-                pageList.length ? <Pagination count={pageLength} page={pageActive} defaultPage={1} color="primary" onChange={(e, p) => { setPageActive(p) }} /> : ''
+                pageList.length ? <Pagination count={pageLength} page={pageActive} sx={{ alignSelf: 'center' }} defaultPage={1} color="primary" onChange={(e, p) => { setPageActive(p) }} /> : ''
             }
         </div>
     )

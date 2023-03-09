@@ -8,19 +8,19 @@ import Select from '@mui/material/Select';
 import { useState } from 'react';
 import actions from '../store/actions/walletActions';
 
-function AddAddress(){
+function AddAddress() {
     const [address, setAddress] = useState('')
     const [net, setNet] = useState('btc');
 
     const handleChange = (event) => {
         setNet(event.target.value);
     };
-    return(
+    return (
         <div className='add-address__container'>
             <Box
                 component="form"
                 sx={{
-                    '& .MuiTextField-root': { m: 1, width: '58ch' },
+                    '& .MuiTextField-root': { m: 1, flexGrow: 1 },
                 }}
                 noValidate
                 autoComplete="off"
@@ -49,7 +49,7 @@ function AddAddress(){
                         size="small"
                         className='add-address__input'
                     />
-                    <Button variant="contained" className='add-address__button--primary' size="normal" onClick={() => { actions.addAddress(address,net); setAddress('')}}>Add address</Button>
+                    <Button variant="contained" className='add-address__button--primary' size="normal" onClick={() => { actions.addAddress(address, net); setAddress('') }}>Add address</Button>
                 </div>
             </Box>
         </div>

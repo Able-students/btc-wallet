@@ -13,8 +13,7 @@ body {
   justify-content: center;
   /* align-items: center; */
   margin: auto;
-  width: 80%;
-  min-width: 880px;
+  width: 100%;
 }
 
 .row {
@@ -23,4 +22,31 @@ body {
 }
 h2 {
   text-align: center;
+}
+
+.wallet-container {
+  width: 80%;
+}
+
+.login-form {
+  width: 30%;
+  padding: 20px;
+  box-shadow: 10px 10px 10px 5px rgb(219, 217, 217);
+}
+
+.login-error {
+  color: red;
+  text-align: center;
+  margin: 0;
+}
+.username {
+  color: white;
+  font-size: 15px;
+  margin-left: 10px;
+}
+
+@media screen and (max-width: 800px){
+  .wallet-container {
+    width: 95%;
+  }
 }

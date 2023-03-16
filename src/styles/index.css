@@ -1,0 +1,60 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+ul {
+  list-style: none;
+  margin: 0;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  margin: auto;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+h2 {
+  text-align: center;
+}
+
+.wallet-container {
+  width: 80%;
+}
+
+.login-form {
+  width: 30%;
+  padding: 20px;
+  box-shadow: 10px 10px 10px 5px rgb(219, 217, 217);
+}
+
+.login-error {
+  color: red;
+  text-align: center;
+  margin: 0;
+}
+.username {
+  color: white;
+  font-size: 15px;
+  margin-left: 10px;
+}
+.cards-total {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media screen and (max-width: 800px) {
+  .wallet-container {
+    width: 95%;
+  }
+}
